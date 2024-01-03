@@ -21,8 +21,9 @@ export default function New() {
 
     const [customerSelected, setCustomerSelected] = useState(0);
 
-    const [loadCustomer, setLoadCustomer] = useState(true)
     const [customers, setCustomers] = useState([])
+    const [loadCustomer, setLoadCustomer] = useState(true)
+
 
     const [servico, setServico] = useState('Massagem Relaxante')
     const [complemento, setComplemento] = useState('')
@@ -44,7 +45,7 @@ export default function New() {
                     })
 
                     if (snapshot.docs.size === 0) {
-                        console.log("NENHUMA EMPRESA CADASTRADA")
+                        console.log("NENHUM CLIENTE CADASTRADO")
                         setCustomers([{ id: '1', nomeFantasia: "FREELA" }])
                         setLoadCustomer(false)
                         return;
@@ -54,7 +55,7 @@ export default function New() {
                     setLoadCustomer(false)
                 })
                 .catch((error) => {
-                    console.log("ERRO AO BUSCAR OS CLIENTE", error)
+                    console.log("ERRO AO BUSCAR OS CLIENTES", error)
                     setLoadCustomer(false)
                     setCustomers([{ id: '1', nomeFantasia: "FREELA" }])
                 })
