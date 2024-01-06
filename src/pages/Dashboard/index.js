@@ -22,12 +22,14 @@ export default function Dashboard() {
 
     useEffect(() => {
         async function loadServiços() {
-            const q = query(listRef, orderBy('created', 'desc'), limit(2));
+            const q = query(listRef, orderBy('created', 'desc'), limit(5));
 
             const querySnapshot = await getDocs(q);
+            setChamados([]);
             await updateState(querySnapshot);
 
             setLoading(false);
+
         }
         loadServiços();
         return (() => { })
@@ -42,13 +44,13 @@ export default function Dashboard() {
             querySnapshot.forEach((doc) => {
                 lista.push({
                     id: doc.id,
-                    assunto: doc.data().assunto,
                     cliente: doc.data().cliente,
                     clienteID: doc.data().clienteID,
                     created: doc.data().created,
                     createdFormat: format(doc.data().created.toDate(), 'dd/MM/yyyy'),
                     complemento: doc.data().complemento,
                     status: doc.data().status,
+                    servico: doc.data().servico,
                 })
             })
 
@@ -84,46 +86,63 @@ export default function Dashboard() {
                 </Title>
 
                 <>
-                    <Link to="/new" className='new'>
-                        <FiPlus color="#FFF" size={25} />
-                        Novo Serviço
-                    </Link>
+                    {chamados.lenght === 0 ? (
+                        <div className='container dashboard'>
+                            <span>Nenhum serviço encontrado..</span>
+                            <Link to="/new" className='new'>
+                                <FiPlus color="#FFF" size={25} />
+                                Novo Serviço
+                            </Link>
+                        </div>
 
-                    <table>
-                        <thead>
-                            <tr>
-                                <th scope="col">Clientes</th>
-                                <th scope="col">Serviço</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Cadastrado em</th>
-                                <th scope="col">#</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td data-label="Cliente">Maria Amália</td>
-                                <td data-label="Serviço">Massagem</td>
-                                <td data-label="Status">
-                                    <span className="badge" style={{ backgroundColor: '#999' }}>
-                                        Em Aberto
-                                    </span>
-                                </td>
-                                <td data-label="Cadastrado">08/11/2023</td>
-                                <td data-label="#">
-                                    <button className="action" style={{ backgroundColor: '#3583f6' }}>
-                                        <FiSearch color='#FFF' size={17} />
-                                    </button>
-                                    <button className="action" style={{ backgroundColor: '#f6a935' }}>
-                                        <FiEdit2 color='#FFF' size={17} />
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
 
+                    ) : (
+                        <>
+                            <Link to="/new" className='new'>
+                                <FiPlus color="#FFF" size={25} />
+                                Novo Serviço
+                            </Link>
+
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Clientes</th>
+                                        <th scope="col">Serviço</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Cadastrado em</th>
+                                        <th scope="col">#</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {chamados.map((item, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td data-label="Cliente">{item.cliente}</td>
+                                                <td data-label="Serviço">{item.servico}</td>
+                                                <td data-label="Status">
+                                                    <span className="badge" style={{ backgroundColor: item.status === 'Pré-Atendimento' ? '#3583f6' : item.status === 'Em Atendimento' ? '#f6a935' : item.status === 'Finalizado' ? '#5cb85c' : '#999' }}>
+                                                        {item.status}
+                                                    </span>
+                                                </td>
+                                                <td data-label="Cadastrado">{item.createdFormat}</td>
+                                                <td data-label="#">
+                                                    <button className="action" style={{ backgroundColor: '#f3bca8' }}>
+                                                        <FiSearch color='#5D4440' size={17} />
+                                                    </button>
+                                                    <button className="action" style={{ backgroundColor: '#5D4440' }}>
+                                                        <FiEdit2 color='#FFF' size={17} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
+
+                                </tbody>
+                            </table>
+                        </>
+                    )}
                 </>
-
-            </div>
+            </div >
         </>
     )
 }
