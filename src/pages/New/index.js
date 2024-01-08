@@ -10,14 +10,19 @@ import { useState, useEffect, useContext } from 'react'
 import { AuthContext } from '../../contexts/auth'
 
 import { db } from '../../services/firebaseConnection'
-import { collection, getDocs, getDoc, doc, addDoc } from 'firebase/firestore'
+import { collection, getDocs, getDoc, doc, addDoc, updateDoc } from 'firebase/firestore'
 import { toast } from 'react-toastify'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const listRef = collection(db, "customers");
 
 
 export default function New() {
     const { user } = useContext(AuthContext)
+
+    const { id } = useParams();
+
+    const navigate = useNavigate();
 
     const [customerSelected, setCustomerSelected] = useState(0);
 
@@ -28,6 +33,7 @@ export default function New() {
     const [servico, setServico] = useState('Massagem Relaxante')
     const [complemento, setComplemento] = useState('')
     const [status, setStatus] = useState('Pré-Atendimento')
+    const [idCustomer, setIdCustomer] = useState(false)
 
 
 
@@ -53,6 +59,10 @@ export default function New() {
 
                     setCustomers(lista)
                     setLoadCustomer(false)
+
+                    if (id) {
+                        loadId(lista);
+                    }
                 })
                 .catch((error) => {
                     console.log("ERRO AO BUSCAR OS CLIENTES", error)
@@ -61,7 +71,25 @@ export default function New() {
                 })
         }
         loadCustomers();
-    }, [])
+    }, [id])
+
+    async function loadId(lista) {
+        const docRef = doc(db, 'chamados', id)
+        await getDoc(docRef)
+            .then((snapshot) => {
+                setServico(snapshot.data().servico)
+                setComplemento(snapshot.data().complemento)
+                setStatus(snapshot.data().status)
+
+                let index = lista.findIndex(item => item.id === snapshot.data().clienteID)
+                setCustomerSelected(index);
+                setIdCustomer(true)
+            })
+            .catch((error) => {
+                console.log(error)
+                setIdCustomer(false)
+            })
+    }
 
     function handleOptionChange(e) {
         setStatus(e.target.value)
@@ -77,6 +105,29 @@ export default function New() {
 
     async function handleRegister(e) {
         e.preventDefault();
+
+        if (idCustomer) {
+            const docRef = doc(db, 'chamados', id)
+            await updateDoc(docRef, {
+                cliente: customers[customerSelected].nomeFantasia,
+                clienteID: customers[customerSelected].id,
+                servico: servico,
+                complemento: complemento,
+                status: status,
+                userID: user.uid,
+            })
+                .then(() => {
+                    toast.success('Atualizado com sucesso')
+                    setCustomerSelected(0)
+                    setComplemento('')
+                    navigate('/dashboard')
+                })
+                .catch((error) => {
+                    toast.error('Opa! Alguma coisa deu errado.')
+                    console.log(error)
+                })
+            return;
+        }
 
         await addDoc(collection(db, 'chamados'), {
             created: new Date(),

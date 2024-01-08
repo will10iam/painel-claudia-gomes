@@ -1,7 +1,7 @@
 .new {
     float: right;
     margin-bottom: 1.5em;
-    background-color: #83bf02;
+    background-color: #5D4440;
     padding: 0.5em;
     border-radius: 5px;
     display: flex;
@@ -19,7 +19,7 @@
 }
 
 .new:hover {
-    background-color: #5fd204;
+    background-color: #7a5853;
     transform: scale(1.1);
 }
 
@@ -28,6 +28,22 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+}
+
+.btn-more {
+    margin: 1.5em 0;
+    padding: 0.5em 1em;
+    background-color: #5D4440;
+    border: 0;
+    border-radius: 5px;
+    font-size: 1.1em;
+    color: #FFF;
+    transition: ease-in-out 0.3s;
+}
+
+.btn-more:hover {
+    background-color: #7a5853;
+    transform: scale(1.1);
 }
 
 table {
