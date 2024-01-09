@@ -18,11 +18,14 @@ export default function Dashboard() {
     const [chamados, setChamados] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isEmpty, setIsEmpty] = useState(false);
+    const [lastDoc, setLastDoc] = useState();
+    const [loadingMore, setLoadingMore] = useState(false);
+
 
 
     useEffect(() => {
-        async function loadServiços() {
-            const q = query(listRef, orderBy('created', 'desc'), limit(5));
+        async function loadServicos() {
+            const q = query(listRef, orderBy('created', 'desc'), limit(2));
 
             const querySnapshot = await getDocs(q);
             setChamados([]);
@@ -31,7 +34,7 @@ export default function Dashboard() {
             setLoading(false);
 
         }
-        loadServiços();
+        loadServicos();
         return (() => { })
     }, []);
 
@@ -54,10 +57,24 @@ export default function Dashboard() {
                 })
             })
 
+            const lastDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
+
             setChamados(chamados => [...chamados, ...lista])
+            setLastDoc(lastDoc);
+
         } else {
             setIsEmpty(true)
         }
+
+        setLoadingMore(false);
+    }
+
+    async function handleMore() {
+        setLoadingMore(true);
+
+        const q = query(listRef, orderBy('created', 'desc'), startAfter(lastDoc), limit(2))
+        const querySnapshot = await getDocs(q);
+        await updateState(querySnapshot);
     }
 
     if (loading) {
@@ -129,9 +146,9 @@ export default function Dashboard() {
                                                     <button className="action" style={{ backgroundColor: '#f3bca8' }}>
                                                         <FiSearch color='#5D4440' size={17} />
                                                     </button>
-                                                    <button className="action" style={{ backgroundColor: '#5D4440' }}>
+                                                    <Link to={`/new/${item.id}`} className="action" style={{ backgroundColor: '#5D4440' }}>
                                                         <FiEdit2 color='#FFF' size={17} />
-                                                    </button>
+                                                    </Link>
                                                 </td>
                                             </tr>
                                         )
@@ -139,6 +156,9 @@ export default function Dashboard() {
 
                                 </tbody>
                             </table>
+
+                            {loadingMore && <h3>Buscando mais serviços...</h3>}
+                            {!loadingMore && !isEmpty && <button className='btn-more' onClick={handleMore}>Buscar Mais</button>}
                         </>
                     )}
                 </>
