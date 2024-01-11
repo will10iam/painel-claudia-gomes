@@ -47,7 +47,7 @@ function AuthProvider({ children }) {
                 setUser(data)
                 storageUser(data)
                 setLoadingAuth(false)
-                toast.success("Bem vindo " + docSnap.data().nome)
+                toast.success("Bem vinda " + docSnap.data().nome)
                 navigate("/dashboard")
 
             }).catch((error) => {

@@ -1,21 +1,15 @@
 import './index.css'
-
 import Sidebar from '../../components/Sidebar'
 import Title from '../../components/Title'
-
-import { FiPlusCircle } from 'react-icons/fi'
-
-
+import { FiEdit, FiPlusCircle } from 'react-icons/fi'
 import { useState, useEffect, useContext } from 'react'
 import { AuthContext } from '../../contexts/auth'
-
 import { db } from '../../services/firebaseConnection'
 import { collection, getDocs, getDoc, doc, addDoc, updateDoc } from 'firebase/firestore'
 import { toast } from 'react-toastify'
 import { useNavigate, useParams } from 'react-router-dom'
 
 const listRef = collection(db, "customers");
-
 
 export default function New() {
     const { user } = useContext(AuthContext)
@@ -29,15 +23,13 @@ export default function New() {
     const [customers, setCustomers] = useState([])
     const [loadCustomer, setLoadCustomer] = useState(true)
 
-
     const [servico, setServico] = useState('Massagem Relaxante')
     const [complemento, setComplemento] = useState('')
     const [status, setStatus] = useState('Pré-Atendimento')
     const [idCustomer, setIdCustomer] = useState(false)
 
-
-
     useEffect(() => {
+
         async function loadCustomers() {
             const querySnapshot = await getDocs(listRef)
                 .then((snapshot) => {
@@ -153,8 +145,10 @@ export default function New() {
             <Sidebar />
 
             <div className='content' >
-                <Title name="Novo Serviço">
-                    <FiPlusCircle size={25} />
+                <Title name={id ? 'Editando Serviço' : "Novo Serviço"}>
+                    <span>
+                        {id ? <FiEdit size={25} /> : <FiPlusCircle size={25} />}
+                    </span>
                 </Title>
 
                 <div className='container'>
