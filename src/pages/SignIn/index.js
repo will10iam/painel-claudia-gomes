@@ -38,6 +38,7 @@ export default function SignIn() {
                     />
 
                     <input
+                        type="password"
                         text="password"
                         placeholder="Sua senha"
                         value={password}
