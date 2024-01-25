@@ -31,6 +31,7 @@ export default function New() {
     useEffect(() => {
 
         async function loadCustomers() {
+            // eslint-disable-next-line no-unused-vars
             const querySnapshot = await getDocs(listRef)
                 .then((snapshot) => {
                     let lista = [];
@@ -63,7 +64,7 @@ export default function New() {
                 })
         }
         loadCustomers();
-    }, [id])
+    })
 
     async function loadId(lista) {
         const docRef = doc(db, 'chamados', id)

@@ -22,6 +22,7 @@ export default function Profile() {
     const { user, setUser, storageUser } = useContext(AuthContext);
     const [avatarUrl, setAvatarUrl] = useState(user && user.avatarUrl);
     const [nome, setNome] = useState(user && user.nome);
+    // eslint-disable-next-line no-unused-vars
     const [email, setEmail] = useState(user && user.email);
     const [imageAvatar, setImageAvatar] = useState(null);
 
@@ -45,6 +46,7 @@ export default function Profile() {
         const currentUid = user.uid;
 
         const uploadRef = ref(storage, `images/${currentUid}/${imageAvatar.name}`)
+        // eslint-disable-next-line no-unused-vars
         const uploadTask = uploadBytes(uploadRef, imageAvatar)
             .then((snapshot) => {
                 getDownloadURL(snapshot.ref).then(async (downloadURL) => {
